@@ -1,4 +1,3 @@
-// services/authService.js
 const API_URL = 'https://reqres.in/api';
 
 async function signIn(email, password) {
@@ -13,10 +12,8 @@ async function signIn(email, password) {
   const data = await response.json();
 
   if (response.ok) {
-    // If successful, return user data
     return data;
   } else {
-    // If failed, throw an error with error message
     throw new Error(data.error);
   }
 }
@@ -33,10 +30,8 @@ async function signUp(email, password) {
   const data = await response.json();
 
   if (response.ok) {
-    // If successful, return user data
     return data;
   } else {
-    // If failed, throw an error with error message
     throw new Error(data.error);
   }
 }
