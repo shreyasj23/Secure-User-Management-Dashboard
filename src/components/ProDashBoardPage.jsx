@@ -1,6 +1,7 @@
 import "./ProDashBoardPage.css";
+import "./ProDashBoardPage.test";
 
-function ProtectedDashboardPage() {
+function ProDashBoardPage() {
   return (
     <div>
       <h2>Protected Dashboard</h2>
@@ -9,4 +10,4 @@ function ProtectedDashboardPage() {
   );
 }
 
-export default ProtectedDashboardPage;
+export default ProDashBoardPage;

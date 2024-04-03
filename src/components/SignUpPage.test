@@ -1,0 +1,60 @@
+import React from 'react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import SignUpPage from './SignUpPage';
+import { signUp } from '../services/AuthService';
+
+jest.mock('../services/AuthService', () => ({
+  signUp: jest.fn(),
+}));
+
+describe('SignUpPage component', () => {
+  it('renders sign up form', () => {
+    const { getByText, getByPlaceholderText } = render(<SignUpPage />);
+    
+    expect(getByText('Sign Up')).toBeInTheDocument();
+    expect(getByPlaceholderText('Email')).toBeInTheDocument();
+    expect(getByPlaceholderText('Password')).toBeInTheDocument();
+    expect(getByText('Sign Up')).toBeInTheDocument();
+  });
+
+  it('calls signUp function with email and password when submitted', async () => {
+    const { getByPlaceholderText, getByText } = render(<SignUpPage />);
+    const emailInput = getByPlaceholderText('Email');
+    const passwordInput = getByPlaceholderText('Password');
+    const signUpButton = getByText('Sign Up');
+
+    const testEmail = 'test@example.com';
+    const testPassword = 'testpassword';
+
+    fireEvent.change(emailInput, { target: { value: testEmail } });
+    fireEvent.change(passwordInput, { target: { value: testPassword } });
+    fireEvent.click(signUpButton);
+
+    await waitFor(() => {
+      expect(signUp).toHaveBeenCalledTimes(1);
+      expect(signUp).toHaveBeenCalledWith(testEmail, testPassword);
+    });
+  });
+
+  it('displays error message if signUp function throws an error', async () => {
+    const errorMessage = 'Email already exists.';
+    signUp.mockRejectedValueOnce(new Error(errorMessage));
+
+    const { getByPlaceholderText, getByText } = render(<SignUpPage />);
+    const emailInput = getByPlaceholderText('Email');
+    const passwordInput = getByPlaceholderText('Password');
+    const signUpButton = getByText('Sign Up');
+
+    const testEmail = 'test@example.com';
+    const testPassword = 'testpassword';
+
+    fireEvent.change(emailInput, { target: { value: testEmail } });
+    fireEvent.change(passwordInput, { target: { value: testPassword } });
+    fireEvent.click(signUpButton);
+
+    await waitFor(() => {
+      expect(getByText(errorMessage)).toBeInTheDocument();
+    });
+  });
+});

@@ -1,0 +1,60 @@
+import React from 'react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import SignInPage from './SignInPage';
+import { signIn } from '../services/AuthService';
+
+jest.mock('../services/AuthService', () => ({
+  signIn: jest.fn(),
+}));
+
+describe('SignInPage component', () => {
+  it('renders sign in form', () => {
+    const { getByText, getByPlaceholderText } = render(<SignInPage />);
+    
+    expect(getByText('Sign In')).toBeInTheDocument();
+    expect(getByPlaceholderText('Email')).toBeInTheDocument();
+    expect(getByPlaceholderText('Password')).toBeInTheDocument();
+    expect(getByText('Sign In')).toBeInTheDocument();
+  });
+
+  it('calls signIn function with email and password when submitted', async () => {
+    const { getByPlaceholderText, getByText } = render(<SignInPage />);
+    const emailInput = getByPlaceholderText('Email');
+    const passwordInput = getByPlaceholderText('Password');
+    const signInButton = getByText('Sign In');
+
+    const testEmail = 'test@example.com';
+    const testPassword = 'testpassword';
+
+    fireEvent.change(emailInput, { target: { value: testEmail } });
+    fireEvent.change(passwordInput, { target: { value: testPassword } });
+    fireEvent.click(signInButton);
+
+    await waitFor(() => {
+      expect(signIn).toHaveBeenCalledTimes(1);
+      expect(signIn).toHaveBeenCalledWith(testEmail, testPassword);
+    });
+  });
+
+  it('displays error message if signIn function throws an error', async () => {
+    const errorMessage = 'Invalid email or password.';
+    signIn.mockRejectedValueOnce(new Error(errorMessage));
+
+    const { getByPlaceholderText, getByText } = render(<SignInPage />);
+    const emailInput = getByPlaceholderText('Email');
+    const passwordInput = getByPlaceholderText('Password');
+    const signInButton = getByText('Sign In');
+
+    const testEmail = 'test@example.com';
+    const testPassword = 'testpassword';
+
+    fireEvent.change(emailInput, { target: { value: testEmail } });
+    fireEvent.change(passwordInput, { target: { value: testPassword } });
+    fireEvent.click(signInButton);
+
+    await waitFor(() => {
+      expect(getByText(errorMessage)).toBeInTheDocument();
+    });
+  });
+});

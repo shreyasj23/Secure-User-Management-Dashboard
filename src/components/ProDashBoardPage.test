@@ -1,0 +1,14 @@
+import React from 'react';
+import { render } from '@testing-library/react';
+import ProDashBoardPage from './ProDashBoardPage';
+
+jest.mock('./ProDashBoardPage.css', () => ({}));
+
+describe('ProDashBoardPage', () => {
+  it('renders header and welcome message', () => {
+    const { getByText } = render(<ProDashBoardPage />);
+    
+    expect(getByText('Protected Dashboard')).toBeInTheDocument();
+    expect(getByText('Welcome to the dashboard!')).toBeInTheDocument();
+  });
+});

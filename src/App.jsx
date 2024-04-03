@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignInPage from './components/SignInPage';
 import SignUpPage from './components/SignUpPage';
-import ProtectedDashboardPage from './components/ProDashBoardPage';
+import ProDashboardPage from './components/ProDashBoardPage';
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
         <Routes>
           <Route path="/" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/dashboard" element={<ProtectedDashboardPage />} />
+          <Route path="/dashboard" element={<ProDashboardPage />} />
         </Routes>
       </div>
     </Router>
